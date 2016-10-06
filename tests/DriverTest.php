@@ -15,21 +15,42 @@
 
     class DriverTest extends PHPUnit_Framework_TestCase
     {
-        function testGetName()
+        function test_getName()
         {
             //Arrange
-            $longitude = 3.451351451341413;
             $latitude = 1.231414134134;
+            $longitude = 3.451351451341413;
 
             $id = 1;
             $name = "Sam";
-            $location = new Location($longitude, $latitude);
+            $location = new Location($latitude, $longitude);
             $test_driver = new Driver($name, $location, $id);
-            var_dump($location);
             //Act
             $result = $test_driver->getName();
             //Assert
             $this->assertEquals($name, $result);
+        }
+
+
+        function test_save()
+        {
+            //ARRANGE
+            $latitude = "47.608941";
+            $longitude = "-122.340145";
+
+            $name = "Snickerbar Snackerdomes";
+            $location = new Location($latitude, $longitude);
+            $test_driver = new Driver($name, $location);
+
+            //ACT
+            $test_driver->save();
+            $expected_output = $test_driver;
+
+            $all_drivers = Driver::getAll();
+            $result = $all_drivers[0];
+
+            //ASSERT
+            $this->assertEquals($expected_output, $result);
         }
     }
 

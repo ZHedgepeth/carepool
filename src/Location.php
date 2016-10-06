@@ -2,16 +2,14 @@
 
     class Location
     {
-        private $longitude;
         private $latitude;
+        private $longitude;
 
-        function __construct($longitude, $latitude)
+        function __construct($latitude, $longitude)
         {
-            $this->longitude = self::formatGeo($longitude, 6);
-            $this->latitude = self::formatGeo($latitude, 6);
+            $this->latitude = $latitude;
+            $this->longitude = $longitude;
         }
-
-
 
 
         static function formatGeo($input, $precision, $total_digits=null)
@@ -103,7 +101,10 @@
 
         function setLongitude($new_longitude)
         {
-            $this->longitude = self::formatGeo($new_longitude, 6);
+            $this->longitude = self::formatGeo($new_longitude, 6, 10);
+
+            //CHECK IF NULL
+            return $this->longitude;
         }
 
         function getLatitude()
@@ -113,14 +114,16 @@
 
         function setLatitude($new_latitude)
         {
-            $this->latitude = self::formatGeo($new_latitude, 6);
+            $this->latitude = self::formatGeo($new_latitude, 6, 10);
+
+            //CHECK IF NULL
+            return $this->latitude;
         }
 
 
-
-        function getLocation()
+        function getPositionArray()
         {
-            $location = [$this->getLongitude, $this->getLatitude];
+            $location = [$this->getLatitude(), $this->getLongitude()];
             return $location;
         }
 

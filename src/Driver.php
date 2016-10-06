@@ -60,8 +60,43 @@
             $this->location = $new_location;
         }
 
+        function save()
+        {
+            $name = $this->getName();
+            $location_object = $this->getLocation();
 
+            $location = $location_object->getPositionArray();
+            $longitude = $location[0];
+            $latitude = $location[1];
 
+            $table = $GLOBALS['drivers_table_name'];
+
+            $sql_save_command = "INSERT INTO " . $table . " (name , lat, lng) VALUES (" . $name . ", " . $latitude . ", " . $longitude . ");";
+
+            $GLOBALS['CPDB']->exec($sql_save_command);
+
+            $this->id = $GLOBALS['CPDB']->lastInsertId();
+        }
+
+        static function getAll()
+        {
+            $table = $GLOBALS['drivers_table_name'];
+            $sql_get_all_command = "SELECT * from " . $table . ";";
+            $returned_drivers = $GLOBALS['CPDB']->query($sql_get_all_command);
+            $drivers = array();
+            foreach ($returned_drivers as $driver)
+            {
+                $name = $driver['name'];
+                $latitude = $driver['lat'];
+                $longitude = $driver['lng'];
+                $location = [$latitude, $longitude];
+                $id = $driver['id'];
+                $new_driver = new Driver($name, $location, $id);
+                array_push($drivers, $new_driver);
+            }
+            var_dump($drivers);
+            return $drivers;
+        }
 
     }
 
