@@ -29,6 +29,11 @@
         }
 
         /*===GETTERS/SETTERS===================================*/
+        function getId()
+        {
+            return (int) $this->id;
+        }
+
         function getName()
         {
             return (string) $this->name;

@@ -11,7 +11,7 @@
     $server ='mysql:host=localhost:8889;dbname=carepool_test';
     $username = 'root';
     $password = 'root';
-    $DB = new PDO($server, $username, $password);
+    $CPDB = new PDO($server, $username, $password);
 
     class DriverTest extends PHPUnit_Framework_TestCase
     {
