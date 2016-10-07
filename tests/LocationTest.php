@@ -15,7 +15,7 @@
 
     class LocationTest extends PHPUnit_Framework_TestCase
     {
-        function test_formatGeo()
+        function test_formatGeoString()
         {
             //Arrange
             $input1 = "123.456789";
@@ -58,7 +58,7 @@
             {
                 $current_input = $input_array[$input_index];
 
-                $formatted_input_string = Location::formatGeo($current_input, 6, 10);
+                $formatted_input_string = Location::formatGeoString($current_input, 6, 10);
 
                 $result[] = $formatted_input_string;
             }

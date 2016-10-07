@@ -8,13 +8,16 @@
     require_once "src/Driver.php";
     require_once "src/Location.php";
 
-    $server ='mysql:host=localhost:8889;dbname=carepool_test';
-    $username = 'root';
-    $password = 'root';
-    $CPDB = new PDO($server, $username, $password);
+    include "database_test.php";
 
     class DriverTest extends PHPUnit_Framework_TestCase
     {
+
+        protected function tearDown()
+        {
+            Driver::deleteAll();
+        }
+
         function test_getName()
         {
             //Arrange
@@ -35,22 +38,44 @@
         function test_save()
         {
             //ARRANGE
-            $latitude = "47.608941";
-            $longitude = "-122.340145";
+            $latitude = "47.60894143";
+            $longitude = "-122.340145242";
 
             $name = "Snickerbar Snackerdomes";
             $location = new Location($latitude, $longitude);
-            $test_driver = new Driver($name, $location);
 
-            //ACT
-            $test_driver->save();
-            $expected_output = $test_driver;
+            if ($location->getLatitude() && $location->getLongitude())
+            {
 
-            $all_drivers = Driver::getAll();
-            $result = $all_drivers[0];
 
-            //ASSERT
-            $this->assertEquals($expected_output, $result);
+                $test_driver = new Driver($name, $location);
+
+                //ACT
+                $test_driver->save();
+
+                print("\ntest_driver:\n");
+                var_dump($test_driver);
+                print("\n");
+
+                $expected_output = $test_driver;
+
+                $all_drivers = Driver::getAll();
+                $result = $all_drivers[0];
+
+                //ASSERT
+                $this->assertEquals($expected_output, $result);
+            }
+            else
+            {
+                //ARRANGE
+                $expected_output = [null, null];
+
+                //ACT
+                $result = $location->getPositionArray();
+
+                //ASSERT
+                $this->assertEquals($expected_output, $result);
+            }
         }
     }
 

@@ -7,12 +7,13 @@
 
         function __construct($latitude, $longitude)
         {
-            $this->latitude = $latitude;
-            $this->longitude = $longitude;
+            //NOTE: CAN BE NULL
+            $this->setLatitude($latitude);
+            $this->setLongitude($longitude);
         }
 
 
-        static function formatGeo($input, $precision, $total_digits=null)
+        static function formatGeoString($input, $precision, $total_digits=null)
         {
             if (is_numeric($precision))
             {
@@ -91,6 +92,19 @@
         }
 
 
+        static function formatGeoFloat($input, $precision, $total_digits=null)
+        {
+            $location_string = self::formatGeoString($input, $precision, $total_digits);
+
+            if ($location_string)
+            {
+                return (float) $location_string;
+            }
+            else
+            {
+                return $location_string;
+            }
+        }
 
 
         /*===GETTERS/SETTERS===================================*/
@@ -101,7 +115,7 @@
 
         function setLongitude($new_longitude)
         {
-            $this->longitude = self::formatGeo($new_longitude, 6, 10);
+            $this->longitude = self::formatGeoString($new_longitude, 6, 10);
 
             //CHECK IF NULL
             return $this->longitude;
@@ -114,7 +128,7 @@
 
         function setLatitude($new_latitude)
         {
-            $this->latitude = self::formatGeo($new_latitude, 6, 10);
+            $this->latitude = self::formatGeoString($new_latitude, 6, 10);
 
             //CHECK IF NULL
             return $this->latitude;
@@ -125,6 +139,11 @@
         {
             $location = [$this->getLatitude(), $this->getLongitude()];
             return $location;
+        }
+
+        static function deleteAll()
+        {
+            $GLOBALS['CPDB']->exec("DELETE FROM locations;");
         }
 
 

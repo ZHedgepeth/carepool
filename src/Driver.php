@@ -4,6 +4,10 @@
     require_once(__DIR__ . "/../src/Location.php");
 
     $drivers_table_name = "drivers";
+    $drivers_riders_table_name = "drivers_riders";
+    $drivers_dTrips = "drivers_dTrips";
+
+    include "database.php";
 
     class Driver
     {
@@ -75,27 +79,57 @@
 
             $GLOBALS['CPDB']->exec($sql_save_command);
 
+
+            print("\nlastInsertId:\n");
+            var_dump($GLOBALS['CPDB']->lastInsertId());
+            print("\n");
+
             $this->id = $GLOBALS['CPDB']->lastInsertId();
         }
 
         static function getAll()
         {
             $table = $GLOBALS['drivers_table_name'];
+
             $sql_get_all_command = "SELECT * from " . $table . ";";
-            $returned_drivers = $GLOBALS['CPDB']->query($sql_get_all_command);
-            $drivers = array();
-            foreach ($returned_drivers as $driver)
+
+            $all_drivers_PDOStatement = $GLOBALS['CPDB']->query($sql_get_all_command);
+
+            print("\nPDOStatement:\n");
+            var_dump($all_drivers_PDOStatement);
+            print("\n");
+
+            $all_drivers = [];
+
+            if ($all_drivers_PDOStatement)
             {
-                $name = $driver['name'];
-                $latitude = $driver['lat'];
-                $longitude = $driver['lng'];
-                $location = [$latitude, $longitude];
-                $id = $driver['id'];
-                $new_driver = new Driver($name, $location, $id);
-                array_push($drivers, $new_driver);
+                $all_drivers_data = $all_drivers_PDOStatement->fetchAll();
+
+                for ($driver_index = 0; $driver_index < count($all_drivers_data); $driver_index++)
+                {
+                    $current_driver = $all_drivers_data[$driver_index];
+
+                    $name = $current_driver['name'];
+
+                    $latitude = $current_driver['lat'];
+                    $longitude = $current_driver['lng'];
+
+                    $location = new Location($latitude, $longitude);
+
+                    $id = $current_driver['id'];
+
+                    $current_driver_object = new Driver($name, $location, $id);
+
+                    $all_drivers[] = $current_driver_object;
+                }
             }
-            var_dump($drivers);
-            return $drivers;
+            return $all_drivers;
+        }
+
+
+        static function deleteAll()
+        {
+            $GLOBALS['CPDB']->exec("DELETE FROM drivers;");
         }
 
     }
